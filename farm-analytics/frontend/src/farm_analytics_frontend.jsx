@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import ChangePasswordModal from './ChangePasswordModal';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
 
 const Dashboard = ({ token, onLogout }) => {
   const [kpis, setKpis] = useState(null);
