@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: marketing_mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - marketing_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: marketing_backend
+    ports:
+      - "8000:8000"
+    environment:
+      MONGO_URL: "mongodb://admin:password123@mongodb:27017"
+    depends_on:
+      - mongodb
+    networks:
+      - marketing_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: marketing_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - marketing_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  marketing_network:
+    driver: bridge
